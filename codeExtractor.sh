@@ -1,28 +1,40 @@
 #!/bin/bash
 
-# 출력 파일 지정
-output_file="$1.code_output.txt"
+# 폴더 경로와 출력 파일 이름을 인자로 받음
+folder_path="$1"
+output_file="$2"
 
-# 상대 경로로 지정한 폴더를 첫 번째 인자로 받음
-folder_path=$2
-
-# 기존에 존재하는 output.txt 파일 삭제 (있을 경우)
-if [ -f "$output_file" ]; then
-  rm "$output_file"
+# 사용법 안내
+if [ -z "$folder_path" ] || [ -z "$output_file" ]; then
+  echo "사용법: $0 <폴더_경로> <출력_파일명>"
+  exit 1
 fi
 
-# 재귀적으로 폴더 안의 모든 .java 파일을 찾고, 각 파일의 내용을 output.txt에 추가
-find "$folder_path" -type f -name "*.java" | while read java_file; do
-  echo "Processing $java_file"
+# 기존에 존재하는 출력 파일 삭제 (있을 경우)
+if [ -f "$output_file" ]; then
+  rm "$output_file"
+  echo "기존의 $output_file 파일을 삭제했습니다."
+fi
+
+# 특정 확장자를 지정 (예: .txt, .sh 등 원하는 확장자로 변경)
+file_extension=".java"
+
+# 특정 확장자를 가진 파일을 재귀적으로 찾아 처리
+find "$folder_path" -type f -name "*$file_extension" | while read -r file; do
+  echo "Processing $file"
+
+  # 파일 경로 출력
+  echo "파일 경로: $file" >> "$output_file"
 
   # 파일 이름 출력
-  echo "$(basename "$java_file")" >> "$output_file"
+  echo "파일 이름: $(basename "$file")" >> "$output_file"
 
-  # 파일 내용 중 import 및 package 구문을 제외하고 출력
-  grep -Ev '^\s*(import)\s' "$java_file" >> "$output_file"
+  # 파일 내용 출력
+  echo "파일 내용:" >> "$output_file"
+  cat "$file" >> "$output_file"
 
-  # 파일 간에 구분을 위한 빈 줄 추가
-  echo -e "\n" >> "$output_file"
+  # 파일 간에 구분을 위한 구분선 추가
+  echo -e "\n------------------------------\n" >> "$output_file"
 done
 
-echo "All .java files have been processed and saved in $output_file"
+echo "모든 *$file_extension 파일이 $output_file 에 저장되었습니다."

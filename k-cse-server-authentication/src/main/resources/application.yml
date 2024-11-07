@@ -1,0 +1,20 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: ${GOOGLE_REDIRECT_URI}
+            scope: email, profile
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    bearer-type: Bearer
+    expiration:
+      access: 60 * 60 * 24 * 3 # 3 days
+      refresh: 60 * 60 * 24 * 15 # 15 days
+  auth:
+    redirect-uri: ${OAUTH2_REDIRECT_URI}

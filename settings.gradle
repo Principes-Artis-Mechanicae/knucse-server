@@ -1,1 +1,8 @@
 rootProject.name = 'k-cse-server'
+include(
+        "k-cse-server-bootstrap",
+        "k-cse-server-authentication",
+        "k-cse-server-locker",
+        "k-cse-server-student",
+        "k-cse-server-common"
+)
